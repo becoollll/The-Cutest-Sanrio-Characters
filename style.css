@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
+body {
+    background-color: #F6F5F2;
+    font-family: "Archivo Black", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    text-align: center;
+}
+
+h1 {
+    color: #F3D0D7;
+    font-size: 300%;
+    font-family: "Luckiest Guy", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h2 {
+    color: #B3C8CF;
+    font-size: 180%;
+    padding-top: 1.5%;
+}
+
+p {
+    color: #8d8d8d;
+    font-size: 140%;
+    font-family: "Luckiest Guy", cursive;
+    font-weight: 400;
+    font-style: normal;
+}
+
+input {
+    padding: 10px;
+    font-size: 130%;
+    font-family: "Luckiest Guy", cursive;
+    font-weight: 400;
+    font-style: normal;
+    color: #8d8d8d;
+    border-radius: 5px;
+    border:none;
+    width: 15%;
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+}
+
+button {
+    font-family: "Luckiest Guy", cursive;
+    font-weight: 400;
+    font-style: normal;
+    padding: 10px 20px;
+    margin-left: 2%;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0px 0px 9px 0px rgba(0,0,0,0.1);
+    font-size: 130%;
+    color: #8d8d8d;
+    background-color: #FFEFEF;
+}
+
+.center {
+    text-align: center;
+}
+
+.candidates-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0px;
+    row-gap: 50px;
+    background-color: #dde8eb;
+    border-radius: 15px;
+    padding-top: 3%;
+}
+.candidate {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.candidate img {
+    height: 150px;
+    margin-bottom: 10px;
+}
+
+.topSpace {
+    padding-top: 2%;
+}
+
+/*
+粉: #F5E2E2
+紫: #F1E6F1
+橘: #f7caca
+黃: #FDF8E1
+
+01 布丁狗 POMPOMPURIN
+02 酷企鵝 BAD BADTZ-MARU
+03 怕恰狗 POCHACCO
+04 人魚漢頓 HANGYODON
+05 美樂蒂 MY MELODY
+06 大耳狗 CINNAMOROLL
+
+FFEFEF
+BED7DC
+*/

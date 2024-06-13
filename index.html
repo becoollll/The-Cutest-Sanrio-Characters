@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Cutest SANRIO Characters</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.5.2/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>THE CUTEST SANRIO CHARACTERS</h1>
+    <div>
+        <h2>Candidates</h2>
+        <div id="candidates" class="candidates-container"></div>
+    </div>
+    <div>
+        <h2>Vote for the Cutest</h2>
+        <input type="number" id="candidateId" placeholder="Candidate ID">
+        <button onclick="vote()">Vote</button>
+    </div>
+    <div>
+        <h2>Leading Candidate</h2>
+        <p id="firstCandidate">Loading...</p>
+        <p id="secondCandidate">Loading...</p>
+    </div>
+    <div>
+        <h2>Total Votes</h2>
+        <p id="totalVotes">Loading...</p>
+    </div>
+    <p class="topSpace">info: https://www.sanrio.co.jp/characters/</p>
+    <script>
+        let web3;
+        let contract;
+
+        const contractAddress = '0x1C0C42bf1BF175E929bE074E42E57D8a2CA1F351';
+        const contractABI = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "voter",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "candidateId",
+				"type": "uint256"
+			}
+		],
+		"name": "Voted",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "candidates",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "voteCount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "candidatesCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getFirst",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getSecond",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getTotalVotes",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalVotes",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "candidateId",
+				"type": "uint256"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+];
+
+        window.addEventListener('load', async () => {
+            if (window.ethereum) {
+                web3 = new Web3(window.ethereum);
+                try {
+                    await window.ethereum.enable();
+                    contract = new web3.eth.Contract(contractABI, contractAddress);
+                    loadCandidates();
+                    loadTotalVotes();
+                    loadFirstCandidate();
+                    loadSecondCandidate();
+                } catch (error) {
+                    console.error("User denied account access");
+                }
+            } else {
+                console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+            }
+        });
+
+        async function loadCandidates() {
+            const candidatesCount = await contract.methods.candidatesCount().call();
+            const candidatesContainer = document.getElementById('candidates');
+            candidatesContainer.innerHTML = '';
+            for (let i = 1; i <= candidatesCount; i++) {
+                const candidate = await contract.methods.candidates(i).call();
+                const div = document.createElement('div');
+                div.className = 'candidate';
+                div.innerHTML = `
+                    <img src="IMG/${candidate.id}.png" alt="Candidate ${candidate.id}">
+                    <div>
+                        <p>${candidate.id}. ${candidate.name}</p>
+                        <p>Votes: ${candidate.voteCount}</p>
+                    </div>
+                `;
+                candidatesContainer.appendChild(div);
+            }
+        }
+
+        async function vote() {
+            const candidateId = document.getElementById('candidateId').value;
+            const accounts = await web3.eth.getAccounts();
+            try {
+                await contract.methods.vote(candidateId).send({ from: accounts[0] });
+                loadCandidates();
+                loadTotalVotes();
+                loadFirstCandidate();
+                loadSecondCandidate();
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        async function loadTotalVotes() {
+            const totalVotes = await contract.methods.getTotalVotes().call();
+            document.getElementById('totalVotes').textContent = totalVotes;
+        }
+        async function loadFirstCandidate() {
+            const firstCandidate = await contract.methods.getFirst().call();
+            document.getElementById('firstCandidate').textContent = `1st place: ${firstCandidate[1]}`;
+        }
+        async function loadSecondCandidate() {
+            const secondCandidate = await contract.methods.getSecond().call();
+            document.getElementById('secondCandidate').textContent = `2nd place: ${secondCandidate[1]}`;
+        }
+    </script>
+</body>
+</html>
